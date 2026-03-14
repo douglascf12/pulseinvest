@@ -1,11 +1,11 @@
 import Foundation
 
 struct CoinDTO: Decodable {
-    let id: String
-    let symbol: String
-    let name: String
+    let id: String?
+    let symbol: String?
+    let name: String?
     let image: String?
-    let currentPrice: Double
+    let currentPrice: Double?
     
     enum CodingKeys: String, CodingKey {
         case id
