@@ -36,6 +36,10 @@ final class AppCoordinator {
         viewController.view.backgroundColor = .systemBackground
         viewController.title = "PulseInvest"
         
+        ClosureExamples.simpleClosureExample()
+        ClosureExamples.closureWithParameters()
+        ClosureExamples.trailingClosureExample()
+        
         let navigationController = UINavigationController(rootViewController: viewController)
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
