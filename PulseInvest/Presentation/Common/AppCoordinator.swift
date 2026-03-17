@@ -40,6 +40,8 @@ final class AppCoordinator {
         ClosureExamples.closureWithParameters()
         ClosureExamples.trailingClosureExample()
         
+        ARCExamples.simpleExample()
+        
         let navigationController = UINavigationController(rootViewController: viewController)
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
