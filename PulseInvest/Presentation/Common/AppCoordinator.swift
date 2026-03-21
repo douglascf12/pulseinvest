@@ -10,22 +10,7 @@ final class AppCoordinator {
     
     func start() {
         
-        Task {
-            let repository = CoinRepository(apiClient: APIClient())
-            
-            do {
-                let coins = try await repository.fetchCoins()
-                
-                print("Coins count:", coins.count)
-                
-                coins.prefix(5).forEach {
-                    print($0.name, $0.currentPrice)
-                }
-                
-            } catch {
-                print("Error", error)
-            }
-        }
+        loadCoins()
         
         let viewController = UIViewController()
         viewController.view.backgroundColor = .systemBackground
@@ -34,5 +19,21 @@ final class AppCoordinator {
         let navigationController = UINavigationController(rootViewController: viewController)
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
+    }
+    
+    private func loadCoins() {
+        
+        Task {
+            do {
+                
+                let repository = CoinRepository(apiClient: APIClient())
+                let coins = try await repository.fetchCoins()
+                
+                print("Coins:", coins.prefix(3))
+                
+            } catch {
+                print("Error", error)
+            }
+        }
     }
 }
