@@ -1,9 +1,13 @@
-## User settings
+# Xcode
+.DS_Store
+*.xcuserstate
 xcuserdata/
+**/xcuserdata/
 
-### Xcode Patch ###
-*.xcodeproj/*
-!*.xcodeproj/project.pbxproj
-!*.xcodeproj/xcshareddata/
-!*.xcworkspace/contents.xcworkspacedata
-**/xcshareddata/WorkspaceSettings.xcsettings
+# Build
+build/
+DerivedData/
+
+# Swift Package Manager
+/.build/
+Packages/

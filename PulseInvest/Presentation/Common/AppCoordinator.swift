@@ -10,6 +10,16 @@ final class AppCoordinator {
     
     func start() {
         
+        Task {
+            let repository = CoinRepository(apiClient: APIClient())
+            
+            do {
+                _ = try await repository.fetchCoins()
+            } catch {
+                print("Error", error)
+            }
+        }
+        
         let viewController = UIViewController()
         viewController.view.backgroundColor = .systemBackground
         viewController.title = "PulseInvest"

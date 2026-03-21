@@ -9,6 +9,14 @@ final class CoinRepository: CoinRepositoryProtocol {
     }
     
     func fetchCoins() async throws -> [Coin] {
+        guard let url = Endpoints.coins() else {
+            throw AppError.invalidURL
+        }
+        
+        let data = try await apiClient.fetchData(from: url)
+        
+        print("Raw data:", data)
+        
         return []
     }
 }
