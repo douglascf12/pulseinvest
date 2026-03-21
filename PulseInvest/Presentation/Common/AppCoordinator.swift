@@ -26,7 +26,7 @@ final class AppCoordinator {
         Task {
             do {
                 
-                let repository = CoinRepository(apiClient: APIClient())
+                let repository = makeRepository()
                 let coins = try await repository.fetchCoins()
                 
                 print("Coins:", coins.prefix(3))
@@ -36,4 +36,10 @@ final class AppCoordinator {
             }
         }
     }
+    
+    private func makeRepository() -> CoinRepositoryProtocol {
+        let apiClient = APIClient()
+        return CoinRepository(apiClient: apiClient)
+    }
+    
 }
