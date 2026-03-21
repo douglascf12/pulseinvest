@@ -14,7 +14,14 @@ final class AppCoordinator {
             let repository = CoinRepository(apiClient: APIClient())
             
             do {
-                _ = try await repository.fetchCoins()
+                let coins = try await repository.fetchCoins()
+                
+                print("Coins count:", coins.count)
+                
+                coins.prefix(5).forEach {
+                    print($0.name, $0.currentPrice)
+                }
+                
             } catch {
                 print("Error", error)
             }

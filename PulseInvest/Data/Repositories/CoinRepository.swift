@@ -9,14 +9,25 @@ final class CoinRepository: CoinRepositoryProtocol {
     }
     
     func fetchCoins() async throws -> [Coin] {
+        
         guard let url = Endpoints.coins() else {
             throw AppError.invalidURL
         }
         
         let data = try await apiClient.fetchData(from: url)
         
-        print("Raw data:", data)
-        
-        return []
+        do {
+            
+            let decoder = JSONDecoder()
+            let dtoList = try decoder.decode([CoinDTO].self, from: data)
+            
+            let coins = dtoList.compactMap { CoinMapper.map(dto: $0) }
+            
+            return coins
+            
+        } catch {
+            throw AppError.decodingFailure
+        }
     }
+    
 }
