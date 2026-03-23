@@ -4,6 +4,9 @@ final class CoinsViewController: UIViewController {
     
     private let viewModel: CoinsViewModel
     
+    private let tableView: UITableView = UITableView()
+    private var coins: [Coin] = []
+    
     private let loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .large)
     private let label: UILabel = UILabel()
     private let retryButton: UIButton = UIButton(type: .system)
@@ -34,17 +37,20 @@ final class CoinsViewController: UIViewController {
     }
     
     private func render(_ state: CoinsViewState) {
+        
         loadingIndicator.stopAnimating()
         label.isHidden = true
         retryButton.isHidden = true
+        tableView.isHidden = true
         
         switch state {
         case .loading:
             loadingIndicator.startAnimating()
             
         case let .success(coins):
-            label.text = "Loaded \(coins.count) coins"
-            label.isHidden = false
+            self.coins = coins
+            tableView.reloadData()
+            tableView.isHidden = false
             
         case let .error(error):
             label.text = error.message
@@ -55,6 +61,10 @@ final class CoinsViewController: UIViewController {
             label.text = "Nenhum dado encontrado"
             label.isHidden = false
         }
+    }
+    
+    private func setupTableView() {
+        tableView.dataSource = self
     }
     
     @objc private func didTapRetry() {
@@ -70,20 +80,28 @@ extension CoinsViewController: ViewCodeProtocol {
         setupHierarchy()
         setupConstraints()
         setupStyles()
+        setupTableView()
     }
     
     func setupHierarchy() {
+        view.addSubview(tableView)
         view.addSubview(loadingIndicator)
         view.addSubview(label)
         view.addSubview(retryButton)
     }
     
     func setupConstraints() {
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
         label.translatesAutoresizingMaskIntoConstraints = false
         retryButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
@@ -100,4 +118,24 @@ extension CoinsViewController: ViewCodeProtocol {
         retryButton.setTitle("Tentar novamente", for: .normal)
     }
 
+}
+
+// MARK: - UITableViewDataSource
+extension CoinsViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return coins.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
+        let coin = coins[indexPath.row]
+        
+        cell.textLabel?.text = coin.name
+        cell.detailTextLabel?.text = "$\(coin.currentPrice)"
+        
+        return cell
+    }
+    
 }
