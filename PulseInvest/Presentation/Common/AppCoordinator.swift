@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class AppCoordinator {
     
     private let window: UIWindow
@@ -9,32 +10,13 @@ final class AppCoordinator {
     }
     
     func start() {
-        
-        loadCoins()
-        
-        let viewController = UIViewController()
-        viewController.view.backgroundColor = .systemBackground
-        viewController.title = "PulseInvest"
+        let repository: CoinRepositoryProtocol = makeRepository()
+        let viewModel: CoinsViewModel = CoinsViewModel(repository: repository)
+        let viewController: CoinsViewController = CoinsViewController(viewModel: viewModel)
         
         let navigationController = UINavigationController(rootViewController: viewController)
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
-    }
-    
-    private func loadCoins() {
-        
-        Task {
-            do {
-                
-                let repository = makeRepository()
-                let coins = try await repository.fetchCoins()
-                
-                print("Coins:", coins.prefix(3))
-                
-            } catch {
-                print("Error", error)
-            }
-        }
     }
     
     private func makeRepository() -> CoinRepositoryProtocol {
