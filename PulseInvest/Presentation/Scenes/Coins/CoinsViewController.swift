@@ -2,6 +2,7 @@ import UIKit
 
 final class CoinsViewController: UIViewController {
     
+    // MARK: - Properties
     private let viewModel: CoinsViewModel
     
     private let tableView: UITableView = UITableView()
@@ -11,6 +12,7 @@ final class CoinsViewController: UIViewController {
     private let label: UILabel = UILabel()
     private let retryButton: UIButton = UIButton(type: .system)
     
+    // MARK: - Init
     init(viewModel: CoinsViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -20,16 +22,17 @@ final class CoinsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupView()
+        setupTableView()
         bind()
         viewModel.fetchCoins()
-        
-        retryButton.addTarget(self, action: #selector(didTapRetry), for: .touchUpInside)
     }
     
+    // MARK: - Private methods
     private func bind() {
         viewModel.onStateChange = { [weak self] state in
             self?.render(state)
@@ -41,6 +44,7 @@ final class CoinsViewController: UIViewController {
         loadingIndicator.stopAnimating()
         label.isHidden = true
         retryButton.isHidden = true
+        retryButton.addTarget(self, action: #selector(didTapRetry), for: .touchUpInside)
         tableView.isHidden = true
         
         switch state {
@@ -73,6 +77,7 @@ final class CoinsViewController: UIViewController {
     
 }
 
+// MARK: - ViewCode
 extension CoinsViewController: ViewCodeProtocol {
     
     func setupView() {
@@ -80,7 +85,6 @@ extension CoinsViewController: ViewCodeProtocol {
         setupHierarchy()
         setupConstraints()
         setupStyles()
-        setupTableView()
     }
     
     func setupHierarchy() {
