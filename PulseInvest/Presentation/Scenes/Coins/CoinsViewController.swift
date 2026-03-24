@@ -75,6 +75,9 @@ final class CoinsViewController: UIViewController {
     
     private func setupTableView() {
         tableView.dataSource = self
+        tableView.delegate = self
+        
+        tableView.register(CoinTableViewCell.self, forCellReuseIdentifier: CoinTableViewCell.reuseIdentifier)
     }
     
     @objc private func didTapRetry() {
@@ -138,8 +141,8 @@ extension CoinsViewController: ViewCodeProtocol {
 
 }
 
-// MARK: - UITableViewDataSource
-extension CoinsViewController: UITableViewDataSource {
+// MARK: - UITableViewDataSource + UITableViewDelegate
+extension CoinsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return coins.count
@@ -147,13 +150,18 @@ extension CoinsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
-        let coin = coins[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CoinTableViewCell.reuseIdentifier, for: indexPath) as? CoinTableViewCell else {
+            return UITableViewCell()
+        }
         
-        cell.textLabel?.text = coin.name
-        cell.detailTextLabel?.text = "$\(coin.currentPrice)"
+        let coin = coins[indexPath.row]
+        cell.configure(with: coin)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("Selected", coins[indexPath.row].name)
     }
     
 }
