@@ -5,9 +5,12 @@ final class CoinsViewController: UIViewController {
     // MARK: - Properties
     private let viewModel: CoinsViewModel
     
-    private let tableView: UITableView = UITableView()
     private var coins: [Coin] = []
     
+    private let tableView: UITableView = UITableView()
+    
+    private let stateContainer: UIView = UIView()
+    private let stackView: UIStackView = UIStackView()
     private let loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .large)
     private let label: UILabel = UILabel()
     private let retryButton: UIButton = UIButton(type: .system)
@@ -46,8 +49,10 @@ final class CoinsViewController: UIViewController {
         retryButton.isHidden = true
         retryButton.addTarget(self, action: #selector(didTapRetry), for: .touchUpInside)
         tableView.isHidden = true
+        stateContainer.isHidden = false
         
         switch state {
+            
         case .loading:
             loadingIndicator.startAnimating()
             
@@ -55,6 +60,7 @@ final class CoinsViewController: UIViewController {
             self.coins = coins
             tableView.reloadData()
             tableView.isHidden = false
+            stateContainer.isHidden = true
             
         case let .error(error):
             label.text = error.message
@@ -89,35 +95,43 @@ extension CoinsViewController: ViewCodeProtocol {
     
     func setupHierarchy() {
         view.addSubview(tableView)
-        view.addSubview(loadingIndicator)
-        view.addSubview(label)
-        view.addSubview(retryButton)
+        view.addSubview(stateContainer)
+        
+        stateContainer.addSubview(stackView)
+        
+        stackView.addArrangedSubview(loadingIndicator)
+        stackView.addArrangedSubview(label)
+        stackView.addArrangedSubview(retryButton)
     }
     
     func setupConstraints() {
+        
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
-        label.translatesAutoresizingMaskIntoConstraints = false
-        retryButton.translatesAutoresizingMaskIntoConstraints = false
+        stateContainer.translatesAutoresizingMaskIntoConstraints = false
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            stateContainer.topAnchor.constraint(equalTo: view.topAnchor),
+            stateContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            stateContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            stateContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.topAnchor.constraint(equalTo: loadingIndicator.bottomAnchor, constant: 20),
-            
-            retryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            retryButton.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 16)
+            stackView.centerXAnchor.constraint(equalTo: stateContainer.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: stateContainer.centerYAnchor)
         ])
     }
     
     func setupStyles() {
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.alignment = .center
+        
         label.textAlignment = .center
         retryButton.setTitle("Tentar novamente", for: .normal)
     }
