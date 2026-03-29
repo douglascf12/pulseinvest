@@ -5,14 +5,19 @@ final class CoinsViewModel {
     
     private let repository: CoinRepositoryProtocol
     
-    var onStateChange: ((CoinsViewState) -> Void)?
+    // MARK: - Outputs
     
+    var onLoading: (() -> Void)?
+    var onCoinsLoaded: (([Coin]) -> Void)?
+    var onError: ((UIError) -> Void)?
+    var onEmpty: (() -> Void)?
+        
     init(repository: CoinRepositoryProtocol) {
         self.repository = repository
     }
     
     func fetchCoins() {
-        onStateChange?(.loading)
+        onLoading?()
         
         Task {
             do {
@@ -31,14 +36,14 @@ private extension CoinsViewModel {
     
     func handleSuccess(_ coins: [Coin]) {
         if coins.isEmpty {
-            onStateChange?(.empty)
+            onEmpty?()
         } else {
-            onStateChange?(.success(coins))
+            onCoinsLoaded?(coins)
         }
     }
     
     func handleError(_ error: Error) {
         let uiError: UIError = ErrorMapper.map(error)
-        onStateChange?(.error(uiError))
+        onError?(uiError)
     }
 }
