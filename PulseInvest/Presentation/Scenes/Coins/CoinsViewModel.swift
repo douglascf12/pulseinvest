@@ -16,20 +16,29 @@ final class CoinsViewModel {
         
         Task {
             do {
-                
                 let coins = try await repository.fetchCoins()
                 
-                if coins.isEmpty {
-                    onStateChange?(.empty)
-                } else {
-                    onStateChange?(.success(coins))
-                }
-                
+                handleSuccess(coins)
             } catch {
-                let uiError = ErrorMapper.map(error)
-                onStateChange?(.error(uiError))
+                handleError(error)
             }
         }
     }
+}
+
+// MARK: - Handlers
+private extension CoinsViewModel {
     
+    func handleSuccess(_ coins: [Coin]) {
+        if coins.isEmpty {
+            onStateChange?(.empty)
+        } else {
+            onStateChange?(.success(coins))
+        }
+    }
+    
+    func handleError(_ error: Error) {
+        let uiError: UIError = ErrorMapper.map(error)
+        onStateChange?(.error(uiError))
+    }
 }
