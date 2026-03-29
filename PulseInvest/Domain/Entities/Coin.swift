@@ -6,4 +6,5 @@ struct Coin: Decodable {
     let name: String
     let imageURL: URL?
     let currentPrice: Double
+    let priceChangePercentage24h: Double?
 }
