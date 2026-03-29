@@ -37,40 +37,51 @@ final class CoinsViewController: UIViewController {
     
     // MARK: - Private methods
     private func bind() {
-        viewModel.onStateChange = { [weak self] state in
-            self?.render(state)
+        
+        viewModel.onLoading = { [weak self] in
+            self?.showLoading()
+        }
+        
+        viewModel.onCoinsLoaded = { [weak self] coins in
+            self?.showCoins(coins)
+        }
+        
+        viewModel.onError = { [weak self] error in
+            self?.showError(error)
+        }
+        
+        viewModel.onEmpty = { [weak self] in
+            self?.showEmpty()
         }
     }
     
-    private func render(_ state: CoinsViewState) {
-        
-        loadingIndicator.stopAnimating()
+    private func showLoading() {
+        loadingIndicator.startAnimating()
         label.isHidden = true
         retryButton.isHidden = true
         retryButton.addTarget(self, action: #selector(didTapRetry), for: .touchUpInside)
         tableView.isHidden = true
         stateContainer.isHidden = false
-        
-        switch state {
-            
-        case .loading:
-            loadingIndicator.startAnimating()
-            
-        case let .success(coins):
-            self.coins = coins
-            tableView.reloadData()
-            tableView.isHidden = false
-            stateContainer.isHidden = true
-            
-        case let .error(error):
-            label.text = error.message
-            label.isHidden = false
-            retryButton.isHidden = false
-            
-        case .empty:
-            label.text = "Nenhum dado encontrado"
-            label.isHidden = false
-        }
+    }
+    
+    private func showCoins(_ coins: [Coin]) {
+        self.coins = coins
+        tableView.reloadData()
+        tableView.isHidden = false
+        stateContainer.isHidden = true
+    }
+    
+    private func showError(_ error: UIError) {
+        loadingIndicator.stopAnimating()
+        label.text = error.message
+        label.isHidden = false
+        retryButton.isHidden = false
+    }
+    
+    private func showEmpty() {
+        loadingIndicator.stopAnimating()
+        label.text = "Nenhum ativo encontrado"
+        label.isHidden = false
     }
     
     private func setupTableView() {
