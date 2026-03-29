@@ -155,7 +155,9 @@ extension CoinsViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         let coin = coins[indexPath.row]
-        cell.configure(with: coin)
+        let viewModel = CoinCellViewModelMapper.map(coin)
+        
+        cell.configure(with: viewModel)
         
         return cell
     }

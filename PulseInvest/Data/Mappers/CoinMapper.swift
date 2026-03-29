@@ -10,7 +10,15 @@ struct CoinMapper {
         
         let imageURL = dto.image.flatMap(URL.init(string:))
         let currentPrice = dto.currentPrice ?? 0
+        let priceChangePercentage24h = dto.priceChangePercentage24h
         
-        return Coin(id: id, symbol: symbol, name: name, imageURL: imageURL, currentPrice: currentPrice)
+        return Coin(
+            id: id,
+            symbol: symbol,
+            name: name,
+            imageURL: imageURL,
+            currentPrice: currentPrice,
+            priceChangePercentage24h: priceChangePercentage24h
+        )
     }
 }
