@@ -4,14 +4,15 @@ import UIKit
 final class CoinListCoordinator: Coordinator {
     
     private let navigationController: UINavigationController
+    private let container: AppContainer
     
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, container: AppContainer) {
         self.navigationController = navigationController
+        self.container = container
     }
     
     func start() {
-        let repository: CoinRepositoryProtocol = makeRepository()
-        let viewModel: CoinsViewModel = CoinsViewModel(repository: repository)
+        let viewModel: CoinsViewModel = container.makeCoinsViewModel()
         let viewController: CoinsViewController = CoinsViewController(viewModel: viewModel)
         
         navigationController.pushViewController(viewController, animated: false)
