@@ -33,7 +33,7 @@
 		0032FF442F64CCFB0075A93B /* Exceptions for "PulseInvest" folder in "PulseInvest" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				App/Info.plist,
 			);
 			target = 0032FF1B2F64CCF80075A93B /* PulseInvest */;
 		};
